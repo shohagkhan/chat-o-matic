@@ -1,10 +1,8 @@
 const { GraphQLServer } = require('graphql-yoga');
 
 
-const message = [
-    { id: "1", user: "shohag", content: "Content" },
-    { id: "2", user: "Amin", content: "Java" }
-]
+const message = []
+
 const typeDefs = `
 type Message {
     id: ID!
@@ -14,10 +12,25 @@ type Message {
 type Query {
     message: [Message]
 }
+
+type Mutation {
+    postMessage(user: String!, content: String!): ID!
+}
 `
 const resolvers = {
     Query: {
         message: () => message
+    },
+    Mutation: {
+        postMessage: (parent, {user, content}, ctx, info) => {
+            const id = message.length;
+            message.push({
+                id,
+                user,
+                content
+            });
+            return id;
+        }
     }
 }
 
